@@ -10,33 +10,33 @@
 #include "date.h"
 using namespace std;
 
-/* �H�e�����z�� enum �s�b���N�q�z�ڰڰ� */
-// �ϥΪ̿��ﶵ
+/* I used to never understand the point of enums, lol */
+// User menu options
 enum UserMenu
 {
-    User_Search = 1,  // �j�M���y
-    User_List,        // �C�X�Ҧ����y
-    User_Popularity,  // �H��Ʀ�]
-    User_Add,         // �s�W���y
-    User_CheckOut,    // �ɮ�
-    User_ReturnBook,  // �ٮ�
-    User_CheckRecord, // �d�ݭɾ\����
-    User_Logout,      // �n�X
-    User_Exit         // ���}
+    User_Search = 1,  // Search for books
+    User_List,        // List all books
+    User_Popularity,  // Popularity ranking
+    User_Add,         // Add a book
+    User_CheckOut,    // Borrow a book
+    User_ReturnBook,  // Return a book
+    User_CheckRecord, // View borrowing records
+    User_Logout,      // Log out
+    User_Exit         // Exit
 };
 
-// �X�ȿ��ﶵ
+// Guest menu options
 enum GuestMenu
 {
-    Guest_Search = 1,    // �j�M���y
-    Guest_List,          // �C�X�Ҧ����y
-    Guest_Popularity,    // �H��Ʀ�]
-    Guest_Login,         // �n�J
-    Guest_CreateAccount, // �Ыرb��
-    Guest_Exit           // ���}
+    Guest_Search = 1,    // Search for books
+    Guest_List,          // List all books
+    Guest_Popularity,    // Popularity ranking
+    Guest_Login,         // Log in
+    Guest_CreateAccount, // Create account
+    Guest_Exit           // Exit
 };
 
-// �M�����
+// Clear the screen display
 void clearScreen()
 {
 #ifdef _WIN32
@@ -46,7 +46,7 @@ void clearScreen()
 #endif
 }
 
-// ���ݨϥΪ̫��U Enter �A�����e��
+// Wait for the user to press Enter before switching screens
 void waitforUser()
 {
     cout << "\nPress Enter to continue...";
@@ -54,49 +54,49 @@ void waitforUser()
     cin.get();
 }
 
-/* �D��� */
-void WelcomingMessage();  // �w��y
-void MainMenu_Loggedin(); // �n�J�᪺�D���
-void MainMenu_Guest();    // �X��(���n�J)�D���
+/* Main Menus */
+void WelcomingMessage();  // Welcome message
+void MainMenu_Loggedin(); // Main menu for logged-in users
+void MainMenu_Guest();    // Main menu for guests (not logged in)
 
-/* �\�� */
-void addBook();                                     // �s�W���y
-void searchBook();                                  // �j�M���y
-void checkoutBook();                                // �ɮ�
-void returnBook();                                  // �ٮ�
-void showRecord();                                  // ��ܭɾ\����
-void listBooks();                                   // �C�X�Ҧ����y
-void showRanking();                                 // ��ܤH��Ʀ�]
-void loginAccount();                                // �n�J�b��
-void loginPassword(string &password, Reader &user); // ��J�K�X
-void createAccount();                               // �Ыرb��
-void createPassword(string &password);              // �]�w�K�X
-void logoutAccount();                               // �n�X
+/* Functions */
+void addBook();                                     // Add a book
+void searchBook();                                  // Search for books
+void checkoutBook();                                // Borrow a book
+void returnBook();                                  // Return a book
+void showRecord();                                  // Show borrowing records
+void listBooks();                                   // List all books
+void showRanking();                                 // Show popularity ranking
+void loginAccount();                                // Log in to account
+void loginPassword(string &password, Reader &user); // Enter password
+void createAccount();                               // Create an account
+void createPassword(string &password);              // Set password
+void logoutAccount();                               // Log out
 
-/* ����t�� */
-void randomDay(); // �H�����ͤ��Ѥ��
-void newDay();    // ����[�@��
-int countDay = 0; // �p��Ѽ�
+/* Date System */
+void randomDay(); // Randomly generate today's date
+void newDay();    // Advance date by one day
+int countDay = 0; // Operation counter to track day progression
 
-/* �t�θ�� */
-vector<Book> Collection; // �]��
-vector<Reader> Readers;  // Ū�̲M��
-Date today(2025, 0, 0);  // ���Ѫ����
+/* System Data */
+vector<Book> Collection; // Library collection
+vector<Reader> Readers;  // List of readers
+Date today(2025, 0, 0);  // Today's date
 
-/* �ϥΪ̨t�� */
-Reader guest;          // �w�]�X��
-Reader *User = &guest; // ���e�ϥΪ̫���
+/* User System */
+Reader guest;          // Default guest user
+Reader *User = &guest; // Pointer to the current user
 
 int main()
 {
-    // ��l�Ƥ��Ѥ��
+    // Initialize today's date
     srand(time(0));
     randomDay();
 
     int action;
     while (1)
     {
-        // �̷Ө�����ܥD���
+        // Display main menu based on user status
         WelcomingMessage();
         if (User->isGuest())
             MainMenu_Guest();
@@ -107,7 +107,7 @@ int main()
 
         if (User->isGuest())
         {
-            // �X��
+            // Guest actions
             switch (action)
             {
             case Guest_Search:
@@ -135,7 +135,7 @@ int main()
         }
         else
         {
-            // �w�n�J
+            // Logged-in user actions
             switch (action)
             {
             case User_Add:
@@ -171,26 +171,26 @@ int main()
             }
         }
 
-        waitforUser(); // ���ݨϥΪ�
-        clearScreen(); // �M�ſ�X
+        waitforUser(); // Wait for user
+        clearScreen(); // Clear the output
 
         countDay++;
         if (countDay == 3)
         {
-            newDay(); // �C�T���ާ@���+1
+            newDay(); // Advance date by one day every three operations
             countDay = 0;
         }
     }
 }
 
-// �w��T���P������
+// Welcome message and today's date
 void WelcomingMessage()
 {
     today.printDate();
     User->helloReader();
 }
 
-// �w�n�J�D���
+// Main menu for logged-in users
 void MainMenu_Loggedin()
 {
     cout << "Library Management System\n"
@@ -206,7 +206,7 @@ void MainMenu_Loggedin()
          << "Enter option: ";
 }
 
-// �X�ȥD���
+// Main menu for guest users
 void MainMenu_Guest()
 {
     cout << "Library Management System\n"
@@ -219,7 +219,7 @@ void MainMenu_Guest()
          << "Enter option: ";
 }
 
-// �s�W���y
+// Add a new book
 void addBook()
 {
     string title, author;
@@ -233,8 +233,8 @@ void addBook()
     cin >> year;
 
     cout << "Thank you for your donation! ^ ^\n";
-    // �W�[���ؼƶq
-    // �C���T���i�����@���H�W����
+    // Increase donation count
+    // Every three books donated can remove one violation record
     User->increaseAdded();
     if (User->donated() >= 3 && User->records() > 0)
         User->decreaseViolation();
@@ -243,15 +243,15 @@ void addBook()
     vector<Book>::iterator it = func::find(Collection, book);
     if (it != Collection.end())
     {
-        // �w�����ѫh�W�[����
+        // If book already exists, increase the number of copies
         it->increaseCopies();
         return;
     }
-    Collection.push_back(book); // �s�ѥ[�J����
-    func::sort(Collection);     // ���s�Ƨ�
+    Collection.push_back(book); // Add new book to collection
+    func::sort(Collection);     // Re-sort collection
 }
 
-// �j�M���y
+// Search for books
 void searchBook()
 {
     int option;
@@ -307,18 +307,18 @@ void searchBook()
         cout << "No matching result.\n";
 }
 
-// �ɮ�
+// Borrow a book
 void checkoutBook()
 {
     if (User->isSuspended())
     {
-        // �T��Q���v�Τ�ɮ�
+        // Prohibit suspended users from borrowing books
         cout << "Your account has been suspended due to repeated infractions.\n";
         return;
     }
     if (User->isReading())
     {
-        // �T��Τ�@���ɦh����
+        // Prohibit users from borrowing multiple books at once
         cout << "Please return the book before you borrow a new one.\n";
         return;
     }
@@ -341,16 +341,16 @@ void checkoutBook()
         cout << "Sorry, the book is currently checked out.\n";
     else
     {
-        it->decreaseCopies();               // ��֥i�ɥ���
-        it->increaseLent();                 // �W�[�ɥX����
-        Date returnDate = today.addDay(14); // �]�w�ٮѤ��
-        User->borrowBook(book, returnDate); // �O���ɮ�
+        it->decreaseCopies();               // Decrease number of available copies
+        it->increaseLent();                 // Increase the count of times lent
+        Date returnDate = today.addDay(14); // Set the return date (14 days from now)
+        User->borrowBook(book, returnDate); // Record borrowing
         cout << "Book checked out successfully.\n";
         cout << "Please return the book before " << returnDate << endl;
     }
 }
 
-// �ٮ�
+// Return a book
 void returnBook()
 {
     string title, author;
@@ -370,13 +370,13 @@ void returnBook()
         cout << "Sorry, the book does not exist in the collection.\n";
         return;
     }
-    it->increaseCopies(); // �ٮѼW�[����
-    User->returnBook();   // �]�w�w�ٮ�
+    it->increaseCopies(); // Increment copies upon return
+    User->returnBook();   // Mark as returned in user records
     cout << "Book returned successfully.\n";
 
     if (User->isLate(today))
     {
-        // �O���k�١A�W�[�H�W����
+        // Overdue return: increase violation count
         User->increaseViolation();
         cout << "\nYour returned item is overdue.\n"
              << "Your account has recorded " << User->records() << " violations.\n"
@@ -385,13 +385,13 @@ void returnBook()
     }
 }
 
-// ��ܭɾ\����
+// Show borrowing records
 void showRecord()
 {
     User->printRecords();
 }
 
-// �C�X�]��
+// List all books in collection
 void listBooks()
 {
     cout << "\n<======= Collections =======>\n";
@@ -400,17 +400,17 @@ void listBooks()
     cout << "<===========================>\n";
 }
 
-// ��ܤH��Ʀ�]
+// Show popularity ranking
 void showRanking()
 {
-    // ���̤H��Ƨ�
-    // �A�ƧǦ^�쥻����
+    // Sort by popularity first
+    // Then list, then sort back to original order
     func::sortPopularity(Collection);
     listBooks();
     func::sort(Collection);
 }
 
-// �n�J�b��
+// Log in to an account
 void loginAccount()
 {
     string ID;
@@ -429,10 +429,10 @@ void loginAccount()
     }
 
     string password;
-    loginPassword(password, *it); // ��J�K�X
+    loginPassword(password, *it); // Password input process
 }
 
-// ��J�K�X�]������ܡ^�]�W�Ū���a�^
+// Enter password (hidden display) (pretty cool, right?)
 void loginPassword(string &password, Reader &user)
 {
     while (true)
@@ -442,10 +442,10 @@ void loginPassword(string &password, Reader &user)
         int i = 0;
         while (i < 29)
         {
-            ch = getch(); // getch()���|�N��J�����e���
+            ch = getch(); // getch() does not echo the input character
             if (ch == '\r')
                 break;
-            if (ch == 8)
+            if (ch == 8) // Backspace logic
             {
                 if (i > 0)
                 {
@@ -478,7 +478,7 @@ void loginPassword(string &password, Reader &user)
     }
 }
 
-// �Ыرb��
+// Create an account
 void createAccount()
 {
     string ID;
@@ -494,7 +494,7 @@ void createAccount()
     }
 
     string password;
-    createPassword(password); // �]�w�K�X
+    createPassword(password); // Set password
 
     Reader newReader(ID, password);
     Readers.push_back(newReader);
@@ -502,12 +502,12 @@ void createAccount()
     cout << "\nAccount successfully created.\n";
 }
 
-// �]�w�K�X�]�⦸��J�T�{�^
+// Set password (with double input confirmation)
 void createPassword(string &password)
 {
     while (true)
     {
-        // �Ĥ@����J�K�X
+        // First password entry
         char temp[30] = {0}, ch;
         cout << "Enter password(less than 30 characters): ";
         int i = 0;
@@ -521,95 +521,4 @@ void createPassword(string &password)
                 if (i > 0)
                 {
                     i--;
-                    temp[i] = '\0';
-                    cout << "\b \b";
-                }
-            }
-            else
-            {
-                temp[i++] = ch;
-                putchar('*');
-            }
-        }
-        temp[i] = '\0';
-
-        // �T�{�K�X
-        char temp2[30] = {0};
-        cout << "\nEnter password again: ";
-        int j = 0;
-        while (j < 29)
-        {
-            ch = getch();
-            if (ch == '\r')
-                break;
-            if (ch == 8)
-            {
-                if (j > 0)
-                {
-                    j--;
-                    temp2[j] = '\0';
-                    cout << "\b \b";
-                }
-            }
-            else
-            {
-                temp2[j++] = ch;
-                putchar('*');
-            }
-        }
-        temp2[j] = '\0';
-
-        // ����⦸�K�X
-        string s1 = temp;
-        string s2 = temp2;
-        if (s1 == s2)
-        {
-            password = temp;
-            break;
-        }
-        else
-            cout << "Passwords do not match. Please try again.\n";
-    }
-}
-
-// �n�X�b��
-void logoutAccount()
-{
-    char confirm;
-    cout << "Are you sure you want to log out? [y/n]: ";
-    cin.ignore();
-    cin >> confirm;
-
-    if (confirm == 'y' || confirm == 'Y')
-    {
-        User = &guest;
-        cout << "Logout successful.\n";
-        return;
-    }
-    else if (confirm == 'n' || confirm == 'N')
-    {
-        cout << "Returning to Main Menu.\n";
-        return;
-    }
-    else
-    {
-        cout << "Invalid input. Please enter 'y' or 'n'.\n";
-    }
-}
-
-// �H�����ͤ��Ѥ��
-void randomDay()
-{
-    int year = 2025;
-    int month = rand() % 12 + 1;
-    Date temp(year, month, 1);
-    int days = temp.daysofthemonth();
-    int day = rand() % days + 1;
-    today = Date(year, month, day);
-}
-
-// ����[�@��
-void newDay()
-{
-    today = today.addDay(1);
-}
+                    temp[i]
